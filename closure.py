@@ -25,17 +25,26 @@ for key in function_dependencies_dict:
 
 # print(set_of_attributes)
 
-for x in set_of_attributes:
-    closure_of_x = set((x))  # x+ = {x}
-    for fd_left in function_dependencies_dict:  # for each FD: Y --> Z in F Do
+
+def closure_finding_algorithm(x_plus, fds_dict):
+    for fd_left in fds_dict:  # for each FD: Y --> Z in F Do
         fd_left_set = set()
         fd_right_set = set()
         for i in fd_left:
             fd_left_set.add(i)
-        for i in function_dependencies_dict[fd_left]:
+        for i in fds_dict[fd_left]:
             fd_right_set.add(i)
-        if fd_left_set.issubset(closure_of_x):  # if Y is subset of x+
-            closure_of_x = closure_of_x.union(fd_right_set)  # x+ = x+ U Z
+        if fd_left_set.issubset(x_plus):  # if Y is subset of x+
+            x_plus = x_plus.union(fd_right_set)  # x+ = x+ U Z
+    return x_plus
+
+
+for x in set_of_attributes:
+    closure_of_x = set((x))  # x+ = {x}
+    closure_of_x = closure_finding_algorithm(
+        closure_of_x, function_dependencies_dict)
+    closure_of_x = closure_finding_algorithm(
+        closure_of_x, function_dependencies_dict)
     closure_set[x] = closure_of_x
 
 # print(closure_set)
