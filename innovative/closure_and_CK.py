@@ -1,5 +1,6 @@
 import itertools
 
+# input_string = '''AB-CD, C-D'''
 input_string = '''A-BC, C-B, D-E, E-D'''
 
 function_dependencies_dict = {}

@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Normalization Tool {% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-3 border">
+            <ul class="mt-5 d-flex flex-column">
+                <li class="btn border my-5" onclick="onBtn1()">Edit Attributes</li>
+                <h3 class="my-3 text-center">Functions</h3>
+                <li class="btn border" onclick="onBtn2()">Find Closure </li>
+                <li class="btn border" onclick="onBtn3()">Find Minimal Cover </li>
+                <li class="btn border" onclick="onBtn4()">Find All Candidate Keys </li>
+                <li class="btn border" onclick="onBtn5()">Check Normal Forms </li>
+                <li class="btn border" onclick="onBtn6()">Normalize to 2nd NF </li>
+                <li class="btn border" onclick="onBtn7()">Normalize to 3rd NF </li>
+            </ul>
+        </div>
+        <div class="col-md-9 border">
+            <div id="content1">
+
+<!-- X-W, WZ-X, WZ-Y, Y-W, Y-X, Y-Z-->
+
+                <form action="{% url 'index' %}" method="post">
+                    {% csrf_token %}
+                    <div class="container w-50 mt-5">
+                        <label for="attributes"><h3>Attributes in Table</h3></label>
+                        <textarea class="form-control" name="attributes" id="attributes" ></textarea>
+                    </div>
+                    <div class="container w-50 mt-5">
+                        <h3 class="mb-3">Functional Dependencies</h3>
+                        <div id="fd_parent">
+                            <input type="hidden" name="count" id="count" value="1">
+                            <div class="d-flex justify-content-between my-2" id="1">
+                                <span><input type="text" name="key1" class="form-control"></span>
+                                <span><i class="fas fa-arrow-right"> </i></span>
+                                <span><input type="text" name="value1" class="form-control"></span>
+                                <button class="btn btn-danger delete" onclick="delete_section()">Delete</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary my-3" id="add_new_fd">Add Another FD</button>
+                    </div>
+                </form>
+            </div>
+
+
+
+
+            <div class="container d-flex justify-content-center align-item-center">
+                <div id="content2" class="mt-5 w-50 justify-content-center align-item-center flex-column">
+                    <h3>Closure</h3>
+                    {% for key, value in closure.items %}
+                        <div>
+                            <span style="padding: 10px 35px; font-size: 30px;">[{{ key }}]<sup><b>+</b></sup>   </span>
+                            <span style="padding: 10px 35px; font-size: 30px;"><i class="fas fa-arrow-right"> </i></span>
+                            <span style="padding: 10px 35px; font-size: 30px;">{{ value }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Minimal Cover -->
+            <div class="container d-flex justify-content-center align-item-center">
+                <div id="content3" class="mt-5 w-50 justify-content-center align-item-center flex-column">
+                    <h3>Minimal Cover</h3>
+                    {% for key, value in minimal_cover.items %}
+                        <div>
+                            <span style="padding: 10px 35px; font-size: 30px;">{{ key }}</span>
+                            <span style="padding: 10px 35px; font-size: 30px;"><i class="fas fa-arrow-right"> </i></span>
+                            <span style="padding: 10px 35px; font-size: 30px;">{{ value }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- All Candidate Keys -->
+            <div class="container d-flex justify-content-center align-item-center">
+                <div id="content4" class="mt-5 w-50 justify-content-center align-item-center flex-column">
+                    <div>
+                        <h3>Candidate Keys</h3>
+                        {% for ck in candidate_keys %}
+                            <div style="padding: 5px 35px; font-size: 30px;">
+                                ck {{forloop.counter}}
+                                <span style="padding: 10px 35px; font-size: 30px;"><i class="fas fa-arrow-right"> </i></span>
+                                {{ ck }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checking all Normal Forms-->
+            <div class="container d-flex justify-content-center align-item-center">
+                <div id="content5" class="mt-5 w-50 justify-content-center align-item-center flex-column">
+                    <h1>Normal Forms</h1>
+                    {% if check1 %}
+                        <div class="container py-3 d-flex justify-content-between align-items-center">
+                            <h3>1st Normal Form</h3>
+                            <span class="bg-dark rounded" style="padding: 20px 30px 17px;"><i class="fas fa-check fa-3x text-primary"></i></span>
+                        </div>
+                    {% else %}
+                        <div class="container py-3 d-flex justify-content-between align-items-center">
+                            <h3>1st Normal Form</h3>
+                            <span class="bg-dark rounded" style="padding: 20px 38px 17px;"><i class="fas fa-xmark fa-3x text-primary"></i></span>
+                        </div>
+                    {% endif %}
+                    {% if check2 %}
+                        <div class="container py-3 d-flex justify-content-between align-items-center">
+                            <h3>2nd Normal Form</h3>
+                            <span class="bg-dark rounded" style="padding: 20px 30px 17px;"><i class="fas fa-check fa-3x text-primary"></i></span>
+                        </div>
+                    {% else %}
+                        <div class="container py-3 d-flex justify-content-between align-items-center">
+                            <h3>2nd Normal Form</h3>
+                            <span class="bg-dark rounded" style="padding: 20px 38px 17px;"><i class="fas fa-xmark fa-3x text-primary"></i></span>
+                        </div>
+                    {% endif %}
+                    {% if check3 %}
+                        <div class="container py-3 d-flex justify-content-between align-items-center">
+                            <h3>3rd Normal Form</h3>
+                            <span class="bg-dark rounded" style="padding: 20px 30px 17px;"><i class="fas fa-check fa-3x text-primary"></i></span>
+                        </div>
+                    {% else %}
+                        <div class="container py-3 d-flex justify-content-between align-items-center">
+                            <h3>3rd Normal Form</h3>
+                            <span class="bg-dark rounded" style="padding: 20px 38px 17px;"><i class="fas fa-xmark fa-3x text-primary"></i></span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="container d-flex justify-content-center align-item-center">
+                <div id="content6" class="mt-5 w-50 justify-content-center align-item-center flex-column">
+                    <div>
+                        {% if check2 %}
+                            <h4>Relation is Already in 2nd Normal Form</h4>
+                        {% else %}
+                            <h3>Normalized Relation  (2nd NF)</h3>
+                            {% for r in relation_2nf %}
+                                <div style="padding: 5px 35px; font-size: 30px;">
+                                    Relation
+                                    {{forloop.counter}}
+                                    <span style="padding: 10px 35px; font-size: 30px;"><i class="fas fa-arrow-right"> </i></span>
+                                    {{ r }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="container d-flex justify-content-center align-item-center">
+                <div id="content7" class="mt-5 w-50 justify-content-center align-item-center flex-column">
+                    <div>
+                        {% if check3 %}
+                            <h4>Relation is Already in 3rd Normal Form</h4>
+                        {% else %}
+                            <h3>Normalized Relation  (3rd NF)</h3>
+                            {% for r in relation_3nf %}
+                                <div style="padding: 5px 35px; font-size: 30px;">
+                                    Relation
+                                    {{forloop.counter}}
+                                    <span style="padding: 10px 35px; font-size: 30px;"><i class="fas fa-arrow-right"> </i></span>
+                                    {{ r }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

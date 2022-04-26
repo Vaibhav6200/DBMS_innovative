@@ -26,7 +26,7 @@ ck = "AB FB EB CB"
 def find_PA_and_NPA(ck, attributes):
     keys = ck.replace(" ", "")
     PA = set(keys)
-    
+
     attributes = set(attributes)
     NPA = attributes.difference(PA)
     return PA, NPA
@@ -40,14 +40,14 @@ def check_3_NF(ck):
     for i, j in fd.items():
         if not i in ck_keys:
             if not j in prime_attributes:
-                return True
-    return False    # if all above conditions are false then there is no transitive dependency and hence its in 3rd NF
+                return False
+    return True    # if all above conditions are false then there is no transitive dependency and hence its in 3rd NF
 
 
 # If it returns true : means we are having transitive dependency so table is not in 3rd NF
 flag = check_3_NF(ck)
 if flag==True:
-    print("Not in 3rd NF")
-else:
     print("Yes! Table is in 3rd NF")
+else:
+    print("Not in 3rd NF")
 
